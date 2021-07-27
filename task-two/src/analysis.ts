@@ -8,27 +8,27 @@ import fs from 'fs';
 import * as emailValidator from 'email-validator';
 
 function analyseFiles(inputPaths: string[], outputPath: string) {
-  let path = inputPaths[0];
-  let fileContent = fs.readFileSync(path, 'utf8');
-  let lines = fileContent.trim().split('\n');
+  const path = inputPaths[0];
+  const fileContent = fs.readFileSync(path, 'utf8');
+  const lines = fileContent.trim().split('\n');
   // to remove "Emails" heading at the beginning of csv file
   lines.splice(0, 1);
 
   // console.log(lines.length)
-  let validDomains: string[] = [];
-  let sampleObj: {
+  const validDomains: string[] = [];
+  const sampleObj: {
     [key: string]: string[] | number | { [key: string]: number };
   } = {};
-  let count1: number = 0;
-  let count2: number = 0;
-  let emailArr: {
+  let count1 = 0;
+  let count2 = 0;
+  const emailArr: {
     [key: string]: number;
   } = {};
-  for (let email of lines) {
+  for (const email of lines) {
     if (emailValidator.validate(email)) {
       validDomains.push(email.split('@')[1]);
       count1++;
-      let domain: string = email.split('@')[1];
+      const domain: string = email.split('@')[1];
 
       if (emailArr[domain]) {
         emailArr[domain]++;
