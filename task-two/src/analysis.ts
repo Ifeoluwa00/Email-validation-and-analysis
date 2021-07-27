@@ -4,71 +4,66 @@
  * @param {string[]} inputPaths An array of csv files to read
  * @param {string} outputPath The path to output the analysis
  */
-import fs from "fs";
-import * as emailValidator from "email-validator";
-  
+import fs from 'fs';
+import * as emailValidator from 'email-validator';
+
 function analyseFiles(inputPaths: string[], outputPath: string) {
-  let path = inputPaths[0]
-  let fileContent = fs.readFileSync(path, "utf8")
-  let lines = fileContent.trim().split("\n")
+  let path = inputPaths[0];
+  let fileContent = fs.readFileSync(path, 'utf8');
+  let lines = fileContent.trim().split('\n');
   // to remove "Emails" heading at the beginning of csv file
-  lines.splice(0, 1)
-  
+  lines.splice(0, 1);
+
   // console.log(lines.length)
-  let validDomains: string[] = []
+  let validDomains: string[] = [];
   let sampleObj: {
-    [key: string]: string[]| number | {[key :string] : number}
-  } = {}
-  let count1: number = 0
-  let count2: number = 0
+    [key: string]: string[] | number | { [key: string]: number };
+  } = {};
+  let count1: number = 0;
+  let count2: number = 0;
   let emailArr: {
     [key: string]: number;
-  }= {}
+  } = {};
   for (let email of lines) {
     if (emailValidator.validate(email)) {
-      validDomains.push(email.split("@")[1])
-      count1++
-      let domain: string = email.split("@")[1]
-      
-      if (emailArr[domain]){
-        emailArr[domain]++
+      validDomains.push(email.split('@')[1]);
+      count1++;
+      let domain: string = email.split('@')[1];
+
+      if (emailArr[domain]) {
+        emailArr[domain]++;
       } else {
-        emailArr[domain] =1
+        emailArr[domain] = 1;
       }
     }
     if (lines) {
-      count2++
+      count2++;
     }
-   
   }
-  sampleObj["valid-domains"] = [...new Set (validDomains)]
-  sampleObj["totalEmailsParsed"]= count2
-  sampleObj["totalValidEmails"] = count1
-  sampleObj[ "categories"]= emailArr
+  sampleObj['valid-domains'] = [...new Set(validDomains)];
+  sampleObj['totalEmailsParsed'] = count2;
+  sampleObj['totalValidEmails'] = count1;
+  sampleObj['categories'] = emailArr;
   // sampleObj
-  return fs.writeFileSync(outputPath, JSON.stringify(sampleObj, null, " "))
-  
-
+  return fs.writeFileSync(outputPath, JSON.stringify(sampleObj, null, ' '));
 }
-
-
 
 //console.log(analyseFiles(["/Users/decagon/Desktop/week4_TASK/week-4-node-008-Ifeoluwa00/task-two/fixtures/inputs/small-sample.csv"], ""))
 export default analyseFiles;
 
 //list of valid domains
 //number of emails parsed
-  //numner of valid emails
-  //for each domain you encountered, 
-  // console.log(lines.length)
-  // console.log(validEmails.length)
+//numner of valid emails
+//for each domain you encountered,
+// console.log(lines.length)
+// console.log(validEmails.length)
 // read the input file, using the input path
 // console.log(lines[3])
-  // console.log(lines[3].split("@")[1])
-  // let validEmails = []
-  //keep track of the total emails parsed
-      //keep track of valid emails
-    //keep track of valid emails domain
-      //count number of mails for a particular email
-      // validEmails.push(email)
-      // console.log('Complete the implementation in src/analysis.ts');
+// console.log(lines[3].split("@")[1])
+// let validEmails = []
+//keep track of the total emails parsed
+//keep track of valid emails
+//keep track of valid emails domain
+//count number of mails for a particular email
+// validEmails.push(email)
+// console.log('Complete the implementation in src/analysis.ts');
