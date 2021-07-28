@@ -9,16 +9,15 @@ import * as emailValidator from 'email-validator';
 
 async function analyseFiles(inputPaths: string[], outputPath: string) {
   const path = inputPaths[0];
-  const fileContent = fs.createReadStream(path)//fs.readFileSync(path, 'utf8');
-  let csvFile = ""
+  const fileContent = fs.createReadStream(path); //fs.readFileSync(path, 'utf8');
+  let csvFile = '';
   for await (const path of fileContent as fs.ReadStream) {
-    csvFile+=path
+    csvFile += path;
   }
-  const lines = csvFile.trim().split("\n")  //const lines = fileContent.trim().split('\n');
+  const lines = csvFile.trim().split('\n'); //const lines = fileContent.trim().split('\n');
   // console.log(lines)
   // to remove "Emails" heading at the beginning of csv file
   lines.shift();
-
 
   // console.log(lines.length)
   const validDomains: string[] = [];
@@ -51,12 +50,11 @@ async function analyseFiles(inputPaths: string[], outputPath: string) {
   sampleObj['totalValidEmails'] = count1;
   sampleObj['categories'] = emailArr;
   // sampleObj
-  let writeResult= JSON.stringify(sampleObj, null, ' ')
-  let finalSample = fs.createWriteStream(outputPath)
-  return finalSample.write(writeResult)
-    //fs.writeFileSync(outputPath, JSON.stringify(sampleObj, null, ' '));
+  const writeResult = JSON.stringify(sampleObj, null, ' ');
+  const finalSample = fs.createWriteStream(outputPath);
+  return finalSample.write(writeResult);
+  //fs.writeFileSync(outputPath, JSON.stringify(sampleObj, null, ' '));
 }
 
 //console.log(analyseFiles(["/Users/decagon/Desktop/week4_TASK/week-4-node-008-Ifeoluwa00/task-two/fixtures/inputs/small-sample.csv"], ""))
 export default analyseFiles;
-

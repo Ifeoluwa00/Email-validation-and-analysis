@@ -21,12 +21,12 @@ async function validateEmailAddresses(inputPath: string[], outputFile: string) {
   // });
   // const fileContent: string = await pathPromise;
   // const lines = fileContent.split('\n');
-  const fileContent = fs.createReadStream(path)//fs.readFileSync(path, 'utf8');
-  let csvFile = ""
+  const fileContent = fs.createReadStream(path); //fs.readFileSync(path, 'utf8');
+  let csvFile = '';
   for await (const path of fileContent as fs.ReadStream) {
-    csvFile+=path
+    csvFile += path;
   }
-  const lines = csvFile.trim().split("\n")
+  const lines = csvFile.trim().split('\n');
   const header = lines.shift();
   // header
   const footer = lines.pop();
@@ -57,8 +57,8 @@ async function validateEmailAddresses(inputPath: string[], outputFile: string) {
   //   }
 
   // });
-  const finalSample = fs.createWriteStream(outputFile)
-  return finalSample.write(outPut)
+  const finalSample = fs.createWriteStream(outputFile);
+  return finalSample.write(outPut);
 }
 
 //console.log(validateEmailAddresses(["./fixtures/inputs/small-sample.csv"], ""));
