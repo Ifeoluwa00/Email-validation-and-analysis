@@ -6,22 +6,30 @@
  */
 import fs from 'fs';
 import dns from 'dns';
+import { head } from 'lodash';
 let pathPromise: Promise<string>;
 async function validateEmailAddresses(inputPath: string[], outputFile: string) {
   const path = inputPath[0];
-  pathPromise = new Promise((resolve, reject) => {
-    fs.readFile(path, 'utf8', (err, data) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(data);
-      }
-    });
-  });
-  const fileContent: string = await pathPromise;
-  const lines = fileContent.split('\n');
-  const header = lines.splice(0, 1);
-  const footer = lines.splice(-1);
+  // pathPromise = new Promise((resolve, reject) => {
+  //   fs.readFile(path, 'utf8', (err, data) => {
+  //     if (err) {
+  //       reject(err);
+  //     } else {
+  //       resolve(data);
+  //     }
+  //   });
+  // });
+  // const fileContent: string = await pathPromise;
+  // const lines = fileContent.split('\n');
+  const fileContent = fs.createReadStream(path)//fs.readFileSync(path, 'utf8');
+  let csvFile = ""
+  for await (const path of fileContent as fs.ReadStream) {
+    csvFile+=path
+  }
+  const lines = csvFile.trim().split("\n")
+  const header = lines.shift();
+  // header
+  const footer = lines.pop();
   const validatedEmailPromises: unknown[] = [];
   for (const email of lines) {
     const domain = email.split('@')[1];
@@ -42,13 +50,16 @@ async function validateEmailAddresses(inputPath: string[], outputFile: string) {
     validatedEmailPromises,
   )) as string[];
   const validEmailDomains: string[] = validatedEmail.filter((x) => x !== null);
-  const outPut = [...header, ...validEmailDomains, ...footer].join('\n');
-  return fs.writeFile(outputFile, outPut, 'utf8', (err) => {
-    if (err) {
-      console.log(err);
-    }
-  });
+  const outPut = [header, ...validEmailDomains, footer].join('\n');
+  // return fs.writeFile(outputFile, outPut, 'utf8', (err) => {
+  //   if (err) {
+  //     console.log(err);
+  //   }
+
+  // });
+  const finalSample = fs.createWriteStream(outputFile)
+  return finalSample.write(outPut)
 }
 
-// console.log(validateEmailAddresses(["./fixtures/inputs/small-sample.csv"], ""));
+//console.log(validateEmailAddresses(["./fixtures/inputs/small-sample.csv"], ""));
 export default validateEmailAddresses;

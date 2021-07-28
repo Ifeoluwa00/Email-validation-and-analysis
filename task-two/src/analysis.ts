@@ -7,12 +7,18 @@
 import fs from 'fs';
 import * as emailValidator from 'email-validator';
 
-function analyseFiles(inputPaths: string[], outputPath: string) {
+async function analyseFiles(inputPaths: string[], outputPath: string) {
   const path = inputPaths[0];
-  const fileContent = fs.readFileSync(path, 'utf8');
-  const lines = fileContent.trim().split('\n');
+  const fileContent = fs.createReadStream(path)//fs.readFileSync(path, 'utf8');
+  let csvFile = ""
+  for await (const path of fileContent as fs.ReadStream) {
+    csvFile+=path
+  }
+  const lines = csvFile.trim().split("\n")  //const lines = fileContent.trim().split('\n');
+  // console.log(lines)
   // to remove "Emails" heading at the beginning of csv file
-  lines.splice(0, 1);
+  lines.shift();
+
 
   // console.log(lines.length)
   const validDomains: string[] = [];
@@ -45,25 +51,12 @@ function analyseFiles(inputPaths: string[], outputPath: string) {
   sampleObj['totalValidEmails'] = count1;
   sampleObj['categories'] = emailArr;
   // sampleObj
-  return fs.writeFileSync(outputPath, JSON.stringify(sampleObj, null, ' '));
+  let writeResult= JSON.stringify(sampleObj, null, ' ')
+  let finalSample = fs.createWriteStream(outputPath)
+  return finalSample.write(writeResult)
+    //fs.writeFileSync(outputPath, JSON.stringify(sampleObj, null, ' '));
 }
 
 //console.log(analyseFiles(["/Users/decagon/Desktop/week4_TASK/week-4-node-008-Ifeoluwa00/task-two/fixtures/inputs/small-sample.csv"], ""))
 export default analyseFiles;
 
-//list of valid domains
-//number of emails parsed
-//numner of valid emails
-//for each domain you encountered,
-// console.log(lines.length)
-// console.log(validEmails.length)
-// read the input file, using the input path
-// console.log(lines[3])
-// console.log(lines[3].split("@")[1])
-// let validEmails = []
-//keep track of the total emails parsed
-//keep track of valid emails
-//keep track of valid emails domain
-//count number of mails for a particular email
-// validEmails.push(email)
-// console.log('Complete the implementation in src/analysis.ts');
