@@ -14,7 +14,7 @@ export function createFileTree(input) {
 
   }
   arrWIthParentId = arrWIthParentId.sort((a, b) => a.id - b.id)
-  let jointUser = [...arrWithNoParentId, ...arrWIthParentId ] //arrWithNoParentId.concat(arrWIthParentId)
+  let jointUser = [...arrWithNoParentId, ...arrWIthParentId] //arrWithNoParentId.concat(arrWIthParentId)
   
   //let jointUser = input.sort((a,b)=> a.parentId - b.id)
   

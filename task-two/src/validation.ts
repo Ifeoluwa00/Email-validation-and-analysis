@@ -6,10 +6,11 @@
  */
 import fs from 'fs';
 import dns from 'dns';
-import { head } from 'lodash';
+//import { head } from 'lodash';
 let pathPromise: Promise<string>;
 async function validateEmailAddresses(inputPath: string[], outputFile: string) {
   const path = inputPath[0];
+console.log(path)
   // pathPromise = new Promise((resolve, reject) => {
   //   fs.readFile(path, 'utf8', (err, data) => {
   //     if (err) {
@@ -26,13 +27,16 @@ async function validateEmailAddresses(inputPath: string[], outputFile: string) {
   for await (const path of fileContent as fs.ReadStream) {
     csvFile += path;
   }
+  
   const lines = csvFile.trim().split('\n');
+  
   const header = lines.shift();
   // header
   const footer = lines.pop();
   const validatedEmailPromises: unknown[] = [];
   for (const email of lines) {
     const domain = email.split('@')[1];
+    
 
     const val: Promise<unknown> = new Promise((resolve, reject) => {
       dns.resolve(domain, 'MX', function (err) {
@@ -47,8 +51,9 @@ async function validateEmailAddresses(inputPath: string[], outputFile: string) {
   }
 
   const validatedEmail: string[] = (await Promise.all(
-    validatedEmailPromises,
+    validatedEmailPromises
   )) as string[];
+  
   const validEmailDomains: string[] = validatedEmail.filter((x) => x !== null);
   const outPut = [header, ...validEmailDomains, footer].join('\n');
   // return fs.writeFile(outputFile, outPut, 'utf8', (err) => {

@@ -9,12 +9,16 @@ import * as emailValidator from 'email-validator';
 
 async function analyseFiles(inputPaths: string[], outputPath: string) {
   const path = inputPaths[0];
+  
   const fileContent = fs.createReadStream(path); //fs.readFileSync(path, 'utf8');
   let csvFile = '';
   for await (const path of fileContent as fs.ReadStream) {
     csvFile += path;
   }
-  const lines = csvFile.trim().split('\n'); //const lines = fileContent.trim().split('\n');
+  
+  const lines = csvFile.trim().split('\n');
+  
+   //const lines = fileContent.trim().split('\n');
   // console.log(lines)
   // to remove "Emails" heading at the beginning of csv file
   lines.shift();
@@ -45,14 +49,16 @@ async function analyseFiles(inputPaths: string[], outputPath: string) {
       count2++;
     }
   }
+ 
   sampleObj['valid-domains'] = [...new Set(validDomains)];
   sampleObj['totalEmailsParsed'] = count2;
   sampleObj['totalValidEmails'] = count1;
   sampleObj['categories'] = emailArr;
-  // sampleObj
+  sampleObj
   const writeResult = JSON.stringify(sampleObj, null, ' ');
   const finalSample = fs.createWriteStream(outputPath);
   return finalSample.write(writeResult);
+
   //fs.writeFileSync(outputPath, JSON.stringify(sampleObj, null, ' '));
 }
 
